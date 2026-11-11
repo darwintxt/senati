@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080808">
+  <title>Iniciar sesión</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { color-scheme: dark; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px;
+      color: #f5f5f5; background: radial-gradient(ellipse at 50% 0%, #202020 0%, #101010 38%, #050505 78%);
+    }
+    .login-card {
+      width: min(100%, 420px); padding: 42px 38px; border: 1px solid #292929;
+      border-radius: 22px; background: rgba(17,17,17,.92);
+      box-shadow: 0 24px 80px rgba(0,0,0,.55); animation: appear .55s ease both;
+    }
+    .brand { display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
+    .brand-mark {
+      width: 48px; height: 48px; display: grid; place-items: center; border-radius: 15px;
+      background: #f5f5f5; color: #080808; font-size: 22px; font-weight: 800;
+    }
+    h1 { margin: 0; text-align: center; font-size: 27px; letter-spacing: -.7px; }
+    .subtitle { margin: 10px 0 30px; text-align: center; color: #929292; font-size: 14px; }
+    .field { margin-bottom: 19px; }
+    label { display: block; margin-bottom: 9px; color: #dedede; font-size: 13px; font-weight: 600; }
+    input {
+      width: 100%; height: 49px; padding: 0 14px; border: 1px solid #333;
+      border-radius: 11px; outline: none; background: #0b0b0b; color: #fff; font-size: 14px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input::placeholder { color: #666; }
+    input:focus { border-color: #aaa; box-shadow: 0 0 0 3px rgba(255,255,255,.08); }
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-right: 66px; }
+    .toggle {
+      position: absolute; top: 50%; right: 12px; transform: translateY(-50%);
+      border: 0; background: transparent; color: #aaa; cursor: pointer; font-size: 12px;
+    }
+    .options { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 5px 0 24px; font-size: 12px; }
+    .remember { display: flex; align-items: center; gap: 8px; color: #aaa; }
+    .remember input { width: 14px; height: 14px; accent-color: #fff; }
+    a { color: #ddd; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .submit {
+      width: 100%; height: 49px; border: 0; border-radius: 11px; background: #f2f2f2;
+      color: #090909; font-size: 14px; font-weight: 750; cursor: pointer; transition: transform .2s, background .2s;
+    }
+    .submit:hover { background: #d8d8d8; transform: translateY(-1px); }
+    .message { min-height: 18px; margin: 14px 0 0; text-align: center; color: #bdbdbd; font-size: 12px; }
+    .footer { margin-top: 28px; text-align: center; color: #666; font-size: 11px; }
+    @keyframes appear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 480px) { .login-card { padding: 34px 24px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="login-card">
+    <div class="brand" aria-hidden="true"><div class="brand-mark">S</div></div>
+    <h1>Bienvenido</h1>
+    <p class="subtitle">Inicia sesión para continuar</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">Correo electrónico</label>
+        <input id="email" name="email" type="email" placeholder="nombre@correo.com" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <div class="password-wrap">
+          <input id="password" name="password" type="password" placeholder="Ingresa tu contraseña" autocomplete="current-password" minlength="6" required>
+          <button class="toggle" type="button" id="togglePassword" aria-label="Mostrar contraseña">Mostrar</button>
+        </div>
+      </div>
+      <div class="options">
+        <label class="remember"><input type="checkbox" name="remember"> Recordarme</label>
+        <a href="#" id="forgotLink">¿Olvidaste tu contraseña?</a>
+      </div>
+      <button class="submit" type="submit">Iniciar sesión</button>
+      <p class="message" id="message" role="status" aria-live="polite"></p>
+    </form>
+    <p class="footer">© <span id="year"></span> · Acceso seguro</p>
+  </main>
+
+  <script>
+    const password = document.getElementById('password');
+    const toggle = document.getElementById('togglePassword');
+    const form = document.getElementById('loginForm');
+    const message = document.getElementById('message');
+
+    toggle.addEventListener('click', () => {
+      const showing = password.type === 'text';
+      password.type = showing ? 'password' : 'text';
+      toggle.textContent = showing ? 'Mostrar' : 'Ocultar';
+      toggle.setAttribute('aria-label', showing ? 'Mostrar contraseña' : 'Ocultar contraseña');
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      message.textContent = 'Formulario validado. Conecta este formulario con tu backend para autenticar usuarios.';
+    });
+
+    document.getElementById('forgotLink').addEventListener('click', (event) => {
+      event.preventDefault();
+      message.textContent = 'Configura aquí el proceso de recuperación de contraseña.';
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
